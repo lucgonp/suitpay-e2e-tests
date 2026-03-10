@@ -1,64 +1,64 @@
-# SuitPay - E2E Test Automation 🚀
+# SuitPay - Automação de Testes E2E 🚀
 
-Professional E2E automation project for the SuitPay platform, built with focus on **scalability**, **maintainability**, and **security**.
+Projeto de automação E2E profissional para a plataforma SuitPay, desenvolvido com foco em **escalabilidade**, **manutenibilidade** e **segurança**.
 
-## 🛠 Tech Stack
+## 🛠 Tecnologias
 
 - **Framework**: [Cypress v15](https://www.cypress.io/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
-- **Design Pattern**: Page Object Model (POM)
-- **Environment Management**: Dotenv for secure credential handling
+- **Linguagem**: [TypeScript](https://www.typescriptlang.org/) (Modo Strict)
+- **Padrão de Projeto**: Page Object Model (POM)
+- **Gerenciamento de Ambiente**: Dotenv para manipulação segura de credenciais
 
-## 🏗 Project Architecture
+## 🏗 Arquitetura do Projeto
 
-The project follows a rigorous separation of concerns:
+O projeto segue uma separação rigorosa de responsabilidades:
 
-- **Pages (`cypress/pages/`)**: Encapsulates selectors and low-level interactions.
-- **E2E Specs (`cypress/e2e/`)**: Contains the test scenarios focusing on business intent and assertions.
-- **Configuration (`cypress.config.ts`)**: Secure injection of environment variables.
+- **Pages (`cypress/pages/`)**: Encapsula seletores e interações de baixo nível.
+- **E2E Specs (`cypress/e2e/`)**: Contém os cenários de teste com foco em intenção de negócio e asserções.
+- **Configuração (`cypress.config.ts`)**: Injeção segura de variáveis de ambiente.
 
-## 🚀 Getting Started
+## 🚀 Começando
 
-### Prerequisites
+### Pré-requisitos
 
-- [Node.js](https://nodejs.org/) (v20 or higher recommended)
+- [Node.js](https://nodejs.org/) (v20 ou superior recomendado)
 - [npm](https://www.npmjs.com/)
 
-### Installation
+### Instalação
 
-1.  Clone this repository.
-2.  Install the dependencies:
+1. Clone este repositório.
+2. Instale as dependências:
     ```bash
     npm install
     ```
 
-### Configuration (Secrets 🔐)
+### Configuração (Segredos 🔐)
 
-This project uses environment variables to manage sensitive data. **Never commit your `.env` file.**
+Este projeto usa variáveis de ambiente para gerenciar dados sensíveis. **Nunca commite seu arquivo `.env`.**
 
-1.  Copy the example file:
+1. Copie o arquivo de exemplo:
     ```bash
     cp .env.example .env
     ```
-2.  Open the `.env` file and fill in your credentials:
+2. Abra o arquivo `.env` e preencha com suas credenciais:
     ```env
-    CYPRESS_USER=your_user
-    CYPRESS_PASS=your_password
+    CYPRESS_USER=seu_usuario
+    CYPRESS_PASS=sua_senha
     ```
 
-## 🧪 Running Tests
+## 🧪 Rodando os Testes
 
-| Command | Description |
+| Comando | Descrição |
 | :--- | :--- |
-| `npm run test:headless` | Runs all tests in headless mode (Chrome). |
-| `npm run test:ui` | Opens the Cypress Runner for visual execution. |
-| `npm run lint` | Runs ESLint to check for code quality issues. |
-| `npm run format` | Automatically formats code using Prettier. |
+| `npm run test:headless` | Roda todos os testes em modo headless. |
+| `npm run test:ui` | Abre o Cypress Runner para execução visual. |
+| `npm run lint` | Executa o ESLint para verificar a qualidade do código. |
+| `npm run format` | Formata o código automaticamente com o Prettier. |
 
-## 🔑 Security Features
+## 🔑 Funcionalidades de Segurança
 
-- **Sensitive Logs**: The `LoginPage` interaction methods use `{ log: false }` when typing credentials to prevent secrets from appearing in the Cypress command log or screenshots.
-- **Config Injection**: Environment variables are injected via `setupNodeEvents` in `cypress.config.ts`, adhering to Cypress v15 security standards.
+- **Logs Sensíveis**: Os métodos de interação do `LoginPage` usam `{ log: false }` ao digitar credenciais para evitar que segredos apareçam nos logs ou capturas de tela do Cypress.
+- **Injeção via Config**: Variáveis de ambiente são injetadas via `setupNodeEvents` no `cypress.config.ts`, seguindo os padrões de segurança do Cypress v15.
 
 ---
-*Developed by Principal SDET - 2026*
+*Desenvolvido por Lucas Gontijo*
