@@ -1,4 +1,4 @@
-import { LoginPage } from '../pages/LoginPage';
+import { LoginPage } from '../../pages/LoginPage';
 
 /**
  * Suite: Validações de Login (Cenários Negativos e Complementares)

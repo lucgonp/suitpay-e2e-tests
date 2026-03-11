@@ -1,4 +1,4 @@
-import { RecuperarSenhaPage } from '../pages/RecuperarSenhaPage';
+import { RecuperarSenhaPage } from '../../pages/RecuperarSenhaPage';
 
 /**
  * Suite: Recuperação de Senha
