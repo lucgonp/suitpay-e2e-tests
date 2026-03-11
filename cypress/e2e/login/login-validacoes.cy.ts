@@ -63,7 +63,7 @@ describe('SuitPay - Validações de Login', () => {
 
   context('Navegação', () => {
     it('deve redirecionar para a página de cadastro ao clicar em "Abrir Conta"', () => {
-      cy.get('div.card-login__button.btn-info').should('be.visible').click();
+      loginPage.clicarAbrirConta();
       cy.location('pathname').should('include', '/register');
     });
 
