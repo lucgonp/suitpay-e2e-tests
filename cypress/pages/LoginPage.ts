@@ -10,6 +10,7 @@ export class LoginPage {
   private readonly inputUser = 'input[placeholder="E-mail ou Usuário"]';
   private readonly inputPass = 'input[placeholder="Senha"]';
   private readonly buttonLogin = 'button.card-login__button';
+  private readonly buttonRegister = 'div.card-login__button--outlined';
 
   /**
    * Navega para a página de login
@@ -35,6 +36,13 @@ export class LoginPage {
    */
   public submeterLogin(): void {
     cy.get(this.buttonLogin).click();
+  }
+
+  /**
+   * Clica no botão "Abrir Conta"
+   */
+  public clicarAbrirConta(): void {
+    cy.get(this.buttonRegister).should('be.visible').click();
   }
 
   /**
