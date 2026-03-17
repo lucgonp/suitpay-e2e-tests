@@ -68,11 +68,12 @@ jobs:
       - name: Verificar se o ambiente está acessível
         run: |
           for i in 1 2 3 4 5; do
-            if curl -sf --max-time 10 ${{ secrets.CYPRESS_BASE_URL }}/login > /dev/null; then
-              echo "Ambiente acessível na tentativa $i"
+            HTTP_CODE=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 15 "${{ secrets.CYPRESS_BASE_URL }}/login" || true)
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 400 ]; then
+              echo "Ambiente acessível na tentativa $i (HTTP $HTTP_CODE)"
               exit 0
             fi
-            echo "Tentativa $i falhou, aguardando 10s..."
+            echo "Tentativa $i: HTTP $HTTP_CODE — aguardando 10s..."
             sleep 10
           done
           echo "Ambiente inacessível após 5 tentativas"
@@ -116,11 +117,12 @@ jobs:
       - name: Verificar se o ambiente está acessível
         run: |
           for i in 1 2 3 4 5; do
-            if curl -sf --max-time 10 ${{ secrets.CYPRESS_BASE_URL }}/login > /dev/null; then
-              echo "Ambiente acessível na tentativa $i"
+            HTTP_CODE=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 15 "${{ secrets.CYPRESS_BASE_URL }}/login" || true)
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 400 ]; then
+              echo "Ambiente acessível na tentativa $i (HTTP $HTTP_CODE)"
               exit 0
             fi
-            echo "Tentativa $i falhou, aguardando 10s..."
+            echo "Tentativa $i: HTTP $HTTP_CODE — aguardando 10s..."
             sleep 10
           done
           echo "Ambiente inacessível após 5 tentativas"
@@ -198,85 +200,3 @@ jobs:
           path: k6/results.json
           retention-days: 7
 
-  # ---------------------------------------------------------------------------
-  # JOB FINAL: NOTIFICAÇÃO POR EMAIL
-  # Roda sempre (if: always()), mesmo se qualquer job anterior falhar.
-  # Requer secrets: MAIL_SMTP_SERVER, MAIL_SMTP_PORT, MAIL_USERNAME, MAIL_PASSWORD
-  # ---------------------------------------------------------------------------
-  notify:
-    name: "📧 Relatório por Email"
-    runs-on: ubuntu-latest
-    needs: [ lint, api-tests, e2e-tests ]
-    if: always()
-    steps:
-      - name: Determinar status geral do pipeline
-        id: pipeline-status
-        run: |
-          LINT="${{ needs.lint.result }}"
-          API="${{ needs.api-tests.result }}"
-          E2E="${{ needs.e2e-tests.result }}"
-
-          if [[ "$LINT" == "success" && "$API" == "success" && "$E2E" == "success" ]]; then
-            echo "status=✅ PASSOU" >> $GITHUB_OUTPUT
-            echo "color=#22c55e" >> $GITHUB_OUTPUT
-          else
-            echo "status=❌ FALHOU" >> $GITHUB_OUTPUT
-            echo "color=#ef4444" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Enviar resultado por email
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: ${{ secrets.MAIL_SMTP_SERVER }}
-          server_port: ${{ secrets.MAIL_SMTP_PORT }}
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          to: andrezanata@suitpay.app
-          from: "SuitPay CI/CD <${{ secrets.MAIL_USERNAME }}>"
-          subject: "${{ steps.pipeline-status.outputs.status }} — SuitPay E2E | ${{ github.ref_name }} | ${{ github.event_name }}"
-          html_body: |
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <div style="background: ${{ steps.pipeline-status.outputs.color }}; padding: 16px 24px; border-radius: 8px 8px 0 0;">
-                <h2 style="color: white; margin: 0;">
-                  ${{ steps.pipeline-status.outputs.status }} — SuitPay CI/CD
-                </h2>
-              </div>
-              <div style="border: 1px solid #e5e7eb; border-top: none; padding: 24px; border-radius: 0 0 8px 8px;">
-                <table style="width: 100%; border-collapse: collapse;">
-                  <tr>
-                    <td style="padding: 8px 0; color: #6b7280; width: 140px;"><strong>Branch</strong></td>
-                    <td style="padding: 8px 0;">${{ github.ref_name }}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0; color: #6b7280;"><strong>Evento</strong></td>
-                    <td style="padding: 8px 0;">${{ github.event_name }}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0; color: #6b7280;"><strong>Commit</strong></td>
-                    <td style="padding: 8px 0; font-family: monospace;">${{ github.sha }}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0; color: #6b7280;"><strong>Lint</strong></td>
-                    <td style="padding: 8px 0;">${{ needs.lint.result }}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0; color: #6b7280;"><strong>API Tests</strong></td>
-                    <td style="padding: 8px 0;">${{ needs.api-tests.result }}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0; color: #6b7280;"><strong>E2E Tests</strong></td>
-                    <td style="padding: 8px 0;">${{ needs.e2e-tests.result }}</td>
-                  </tr>
-                </table>
-                <div style="margin-top: 24px; text-align: center;">
-                  <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                     style="background: #1d4ed8; color: white; padding: 12px 24px; border-radius: 6px;
-                            text-decoration: none; font-weight: bold; display: inline-block;">
-                    Ver resultado completo no GitHub Actions →
-                  </a>
-                </div>
-              </div>
-              <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 16px;">
-                Enviado automaticamente pelo pipeline SuitPay CI/CD
-              </p>
-            </div>
