@@ -49,11 +49,13 @@ describe('SuitPay - Validações de Login', () => {
 
   context('Credenciais Inválidas', () => {
     it('deve exibir mensagem de erro ao usar credenciais incorretas', () => {
+      // Intercept ANTES da ação que dispara a request
+      cy.intercept('POST', '**/api/v1/auth/signin').as('tentativaLogin');
+
       loginPage.preencherCredenciais('usuario_invalido', 'senha_invalida');
       loginPage.submeterLogin();
 
       // Aguarda a tentativa de autenticação ser processada
-      cy.intercept('POST', '**/api/v1/auth/signin').as('tentativaLogin');
       cy.wait('@tentativaLogin');
 
       // Deve permanecer na tela de login após falha
