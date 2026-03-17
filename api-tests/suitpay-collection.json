@@ -12,9 +12,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{BASE_URL}}/login",
-          "host": ["{{BASE_URL}}"],
-          "path": ["login"]
+          "raw": "{{BASE_URL}}/login"
         }
       },
       "event": [
@@ -50,9 +48,7 @@
           "raw": "{\n  \"email\": \"invalid@smoke.test\",\n  \"password\": \"invalid_password\"\n}"
         },
         "url": {
-          "raw": "{{BASE_URL}}/api/auth/login",
-          "host": ["{{BASE_URL}}"],
-          "path": ["api", "auth", "login"]
+          "raw": "{{BASE_URL}}/api/auth/login"
         }
       },
       "event": [
