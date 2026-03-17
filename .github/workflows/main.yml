@@ -23,8 +23,8 @@ jobs:
         env:
           # Conecta as variáveis secretas do GitHub ao Cypress
           CYPRESS_BASE_URL: ${{ secrets.CYPRESS_BASE_URL }}
-          # Adicione outras se tiver, ex:
-          # CYPRESS_API_TOKEN: ${{ secrets.API_TOKEN }}
+          CYPRESS_USER: ${{ secrets.CYPRESS_USER }}
+          CYPRESS_PASS: ${{ secrets.CYPRESS_PASS }}
 
       - name: Salvar Evidências (Screenshots e Vídeos)
         if: always() # Garante que salve mesmo se o teste falhar
