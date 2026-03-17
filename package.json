@@ -8,6 +8,8 @@
     "cypress:run": "cypress run",
     "test:headless": "cypress run",
     "test:ui": "cypress open --e2e",
+    "test:e2e:ci": "cypress run --reporter cypress-junit-reporter --reporter-options mochaFile=cypress/results/results-[hash].xml",
+    "test:api": "newman run api-tests/suitpay-collection.json --env-var BASE_URL=$CYPRESS_BASE_URL --reporters cli,junit --reporter-junit-export newman-results/results.xml",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ."
   },
@@ -21,13 +23,15 @@
   "author": "Principal SDET",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "^15.0.0",
-    "typescript": "^5.0.0",
-    "eslint": "^8.0.0",
-    "prettier": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "cypress": "^15.0.0",
+    "cypress-junit-reporter": "^1.3.1",
+    "dotenv": "^16.0.0",
+    "eslint": "^8.0.0",
     "eslint-plugin-cypress": "^2.15.0",
-    "dotenv": "^16.0.0"
+    "newman": "^6.2.2",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
   }
 }

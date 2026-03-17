@@ -1,0 +1,84 @@
+{
+  "info": {
+    "name": "SuitPay API Smoke Tests",
+    "_postman_id": "suitpay-api-smoke-v1",
+    "description": "Coleção mínima de testes de API para o ambiente sandbox da SuitPay.\nExecutada via Newman no pipeline de CI/CD.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check — Login Page",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/login",
+          "host": ["{{BASE_URL}}"],
+          "path": ["login"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Ambiente acessível — status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Resposta recebida em menos de 5s', function () {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Smoke Test — Tentativa de Login (credenciais inválidas retornam 4xx)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"invalid@smoke.test\",\n  \"password\": \"invalid_password\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/auth/login",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Endpoint de login responde (não é 5xx)', function () {",
+              "  pm.expect(pm.response.code).to.be.below(500);",
+              "});",
+              "",
+              "pm.test('Resposta recebida em menos de 5s', function () {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "https://web.sandbox.suitpay.app",
+      "description": "Sobrescrito via --env-var no Newman durante a execução no CI"
+    }
+  ]
+}
