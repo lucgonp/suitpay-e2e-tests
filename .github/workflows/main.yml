@@ -1,0 +1,37 @@
+name: SuitPay E2E Tests
+
+# Define quando o teste vai rodar (ao dar push ou abrir Pull Request)
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar Dependências e Rodar Cypress
+        # Essa Action oficial do Cypress já gerencia cache e execução
+        uses: cypress-io/github-action@v6
+        with:
+          # A action usará o comando padrão e aplicará o `--browser electron`
+          browser: electron
+        env:
+          # Conecta as variáveis secretas do GitHub ao Cypress
+          CYPRESS_BASE_URL: ${{ secrets.CYPRESS_BASE_URL }}
+          # Adicione outras se tiver, ex:
+          # CYPRESS_API_TOKEN: ${{ secrets.API_TOKEN }}
+
+      - name: Salvar Evidências (Screenshots e Vídeos)
+        if: always() # Garante que salve mesmo se o teste falhar
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-evidence
+          path: |
+            cypress/screenshots
+            cypress/videos
+          retention-days: 7
