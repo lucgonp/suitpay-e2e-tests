@@ -19,9 +19,13 @@ export default defineConfig({
     screenshotOnRunFailure: true,
     viewportWidth: 1280,
     viewportHeight: 720,
-    // Aumentado para compensar a latência maior do ambiente de CI
-    pageLoadTimeout: 120000,
-    defaultCommandTimeout: 15000,
+    // Timeouts razoáveis para CI — se passar de 60s, o ambiente provavelmente está fora
+    pageLoadTimeout: 60000,
+    defaultCommandTimeout: 10000,
+    retries: {
+      runMode: 2,   // CI: até 3 tentativas (1 + 2 retries) para absorver instabilidade do sandbox
+      openMode: 0,  // Local: sem retry para feedback imediato
+    },
     setupNodeEvents(on, config) {
       // Injeção segura das variáveis de ambiente
       config.env.USER = process.env.CYPRESS_USER;

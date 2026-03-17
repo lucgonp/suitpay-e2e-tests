@@ -14,6 +14,19 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
+      - name: Verificar se o ambiente está acessível
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -sf --max-time 10 https://web.sandbox.suitpay.app/login > /dev/null; then
+              echo "Ambiente acessível na tentativa $i"
+              exit 0
+            fi
+            echo "Tentativa $i falhou, aguardando 10s..."
+            sleep 10
+          done
+          echo "Ambiente inacessível após 5 tentativas"
+          exit 1
+
       - name: Instalar Dependências e Rodar Cypress
         # Essa Action oficial do Cypress já gerencia cache e execução
         uses: cypress-io/github-action@v6
