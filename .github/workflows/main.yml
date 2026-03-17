@@ -85,8 +85,6 @@ jobs:
       - name: Executar testes de API (Newman)
         run: |
           npx newman run api-tests/suitpay-collection.json \
-            --env-var "FRONTEND_URL=https://web.sandbox.suitpay.app" \
-            --env-var "API_URL=https://sandbox.ws.suitpay.app" \
             --reporters cli,junit \
             --reporter-junit-export newman-results/results.xml
 
