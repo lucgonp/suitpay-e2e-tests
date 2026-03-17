@@ -83,12 +83,12 @@ jobs:
           CYPRESS_BASE_URL: ${{ secrets.CYPRESS_BASE_URL }}
 
       - name: Executar testes de API (Newman)
-        run: npm run test:api
-        env:
-          # Frontend React (health check da página de login)
-          NEWMAN_FRONTEND_URL: "https://web.sandbox.suitpay.app"
-          # API REST backend (chamadas de autenticação)
-          NEWMAN_API_URL: "https://sandbox.ws.suitpay.app"
+        run: |
+          npx newman run api-tests/suitpay-collection.json \
+            --env-var "FRONTEND_URL=https://web.sandbox.suitpay.app" \
+            --env-var "API_URL=https://sandbox.ws.suitpay.app" \
+            --reporters cli,junit \
+            --reporter-junit-export newman-results/results.xml
 
       - name: Publicar resultados da API no Actions (JUnit)
         uses: dorny/test-reporter@v1
