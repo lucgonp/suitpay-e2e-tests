@@ -2,17 +2,17 @@
   "info": {
     "name": "SuitPay API Smoke Tests",
     "_postman_id": "suitpay-api-smoke-v1",
-    "description": "Coleção mínima de testes de API para o ambiente sandbox da SuitPay.\nExecutada via Newman no pipeline de CI/CD.",
+    "description": "Coleção de smoke tests para a API do ambiente sandbox da SuitPay.\nFrontend: web.sandbox.suitpay.app\nAPI Backend: sandbox.ws.suitpay.app/api/v1\nExecutada via Newman no pipeline de CI/CD.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Health Check — Login Page",
+      "name": "Health Check — Página de Login (Frontend)",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{BASE_URL}}/login"
+          "raw": "{{FRONTEND_URL}}/login"
         }
       },
       "event": [
@@ -21,7 +21,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('Ambiente acessível — status 200', function () {",
+              "pm.test('Frontend acessível — status 200', function () {",
               "  pm.response.to.have.status(200);",
               "});",
               "",
@@ -34,7 +34,7 @@
       ]
     },
     {
-      "name": "Smoke Test — Tentativa de Login (credenciais inválidas retornam 4xx)",
+      "name": "Auth — Login com credenciais inválidas (espera 401)",
       "request": {
         "method": "POST",
         "header": [
@@ -45,10 +45,10 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"email\": \"invalid@smoke.test\",\n  \"password\": \"invalid_password\"\n}"
+          "raw": "{\n  \"login\": \"invalid@smoke.test\",\n  \"password\": \"invalid_password\"\n}"
         },
         "url": {
-          "raw": "{{BASE_URL}}/api/auth/login"
+          "raw": "{{API_URL}}/api/v1/auth/signin"
         }
       },
       "event": [
@@ -57,12 +57,17 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('Endpoint de login responde (não é 5xx)', function () {",
-              "  pm.expect(pm.response.code).to.be.below(500);",
+              "pm.test('Endpoint de login responde com 401 para credenciais inválidas', function () {",
+              "  pm.response.to.have.status(401);",
               "});",
               "",
               "pm.test('Resposta recebida em menos de 5s', function () {",
               "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "",
+              "pm.test('Corpo da resposta indica erro de credencial', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('status', 401);",
               "});"
             ]
           }
@@ -72,9 +77,14 @@
   ],
   "variable": [
     {
-      "key": "BASE_URL",
+      "key": "FRONTEND_URL",
       "value": "https://web.sandbox.suitpay.app",
-      "description": "Sobrescrito via --env-var no Newman durante a execução no CI"
+      "description": "URL do frontend React. Sobrescrito via --env-var no CI."
+    },
+    {
+      "key": "API_URL",
+      "value": "https://sandbox.ws.suitpay.app",
+      "description": "URL base da API REST. Sobrescrito via --env-var no CI."
     }
   ]
 }

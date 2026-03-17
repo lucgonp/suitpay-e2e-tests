@@ -9,7 +9,7 @@
     "test:headless": "cypress run",
     "test:ui": "cypress open --e2e",
     "test:e2e:ci": "cypress run --reporter cypress-junit-reporter --reporter-options mochaFile=cypress/results/results-[hash].xml",
-    "test:api": "newman run api-tests/suitpay-collection.json --env-var BASE_URL=$CYPRESS_BASE_URL --reporters cli,junit --reporter-junit-export newman-results/results.xml",
+    "test:api": "newman run api-tests/suitpay-collection.json --env-var FRONTEND_URL=${NEWMAN_FRONTEND_URL:-https://web.sandbox.suitpay.app} --env-var API_URL=${NEWMAN_API_URL:-https://sandbox.ws.suitpay.app} --reporters cli,junit --reporter-junit-export newman-results/results.xml",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ."
   },
